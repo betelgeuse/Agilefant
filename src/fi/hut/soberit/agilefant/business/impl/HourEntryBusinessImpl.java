@@ -10,8 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.MutableDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -215,7 +217,10 @@ public class HourEntryBusinessImpl extends GenericBusinessImpl<HourEntry>
     @Transactional(readOnly = true)
     public List<DailySpentEffort> getDailySpentEffortByInterval(DateTime start,
             DateTime end, int userId) {
-        Map<Date, Long> dbData = new HashMap<Date, Long>();
+        DateTimeZone zone = DateTimeZone.forOffsetHoursMinutes(-8, 0);
+        start = start.withZone(zone);
+        end = end.withZone(zone);
+        Map<DateMidnight, Long> dbData = new HashMap<DateMidnight, Long>();
         List<DailySpentEffort> dailyEffort = new ArrayList<DailySpentEffort>();
 
         if(start.compareTo(end) >= 0) {
@@ -225,21 +230,20 @@ public class HourEntryBusinessImpl extends GenericBusinessImpl<HourEntry>
         
         //sum efforts per day
         for(HourEntry entry : entries) {
-            Date date = entry.getDate().toDateMidnight().toDate();
-            if(!dbData.containsKey(date)) {
-                dbData.put(date, 0L);
+            DateMidnight md = entry.getDate().withZone(zone).toDateMidnight();
+            if(!dbData.containsKey(md)) {
+                dbData.put(md, 0L);
             }
-            dbData.put(date, dbData.get(date) + entry.getMinutesSpent());
+            dbData.put(md, dbData.get(md) + entry.getMinutesSpent());
         }
         MutableDateTime iteratorDate = new MutableDateTime(start.toDateMidnight());
         //construct list that has a single entry per day
         while(iteratorDate.compareTo(end) <= 0) {
             DailySpentEffort effortEntry = new DailySpentEffort();
-            Date currentDate = iteratorDate.toDate();
-            if(dbData.containsKey(currentDate)) {
-                effortEntry.setSpentEffort(dbData.get(currentDate));
+            if(dbData.containsKey(iteratorDate)) {
+                effortEntry.setSpentEffort(dbData.get(iteratorDate));
             }
-            effortEntry.setDay(currentDate);
+            effortEntry.setDay(iteratorDate.toDateTime());
             dailyEffort.add(effortEntry);
             iteratorDate.addDays(1);
         }
