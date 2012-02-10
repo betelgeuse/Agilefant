@@ -23,6 +23,7 @@ var ProjectModel = function ProjectModel() {
     "endDate": "endDate",
     "backlogSize": "backlogSize",
     "baselineLoad": "baselineLoad",
+    "spentEffort": "spentEffort",
     "scheduleStatus": "scheduleStatus",
     "status": "status"
   };
@@ -268,6 +269,10 @@ ProjectModel.prototype.getBaselineLoad = function() {
 };
 ProjectModel.prototype.setBaselineLoad = function(baselineLoad) {
   this.currentData.baselineLoad = baselineLoad;
+};
+
+ProjectModel.prototype.getSpentEffort = function() {
+  return this.currentData.spentEffort;
 };
 
 ProjectModel.prototype.getChildren = function() {

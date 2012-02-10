@@ -26,6 +26,8 @@ public class ProjectTO extends Project implements LeafStoryContainer, Scheduled 
     private List<IterationTO> iterations = new ArrayList<IterationTO>();
     
     private Set<User> assignees;
+    
+    private long spentEffort;
 
     public ProjectTO() {};
     public ProjectTO(Project project) {
@@ -67,5 +69,13 @@ public class ProjectTO extends Project implements LeafStoryContainer, Scheduled 
 
     public void setChildIterations(List<IterationTO> iterations) {
         this.iterations = iterations;
+    }
+
+    public long getSpentEffort() {
+        return spentEffort;
+    }
+ 
+    public void setSpentEffort(long l) {
+        this.spentEffort = l;
     }
 }

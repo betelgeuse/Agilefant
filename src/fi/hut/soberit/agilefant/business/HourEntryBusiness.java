@@ -11,6 +11,7 @@ import fi.hut.soberit.agilefant.model.Backlog;
 import fi.hut.soberit.agilefant.model.BacklogHourEntry;
 import fi.hut.soberit.agilefant.model.HourEntry;
 import fi.hut.soberit.agilefant.model.Iteration;
+import fi.hut.soberit.agilefant.model.Project;
 import fi.hut.soberit.agilefant.model.Story;
 import fi.hut.soberit.agilefant.transfer.DailySpentEffort;
 
@@ -47,6 +48,12 @@ public interface HourEntryBusiness extends GenericBusiness<HourEntry> {
      * calculates their sum.
      */
     long calculateSumOfIterationsHourEntries(Iteration iteration);
+    
+    /**
+     * Get sum of hour entries for iterations under the project
+     * and direct spent effort on the project
+     */
+    long calculateSumOfProjectHourEntries(Project project);
 
     List<BacklogHourEntry> retrieveByParent(Backlog item);
 

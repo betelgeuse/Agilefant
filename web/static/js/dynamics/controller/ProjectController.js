@@ -110,7 +110,7 @@ ProjectController.prototype.filterLeafStoriesByState = function(element) {
  * @member ProjectController
  */
 ProjectController.columnNames =
-  ["name","reference","startDate","endDate","plannedSize","baselineLoad","assignees","description"];
+  ["name","reference","startDate","endDate","plannedSize","spentEffort","baselineLoad","assignees","description"];
 ProjectController.columnIndices = CommonController.createColumnIndices(ProjectController.columnNames); 
 
 ProjectController.columnConfigs = {
@@ -168,6 +168,18 @@ ProjectController.columnConfigs = {
       size: '10ex',
       set : ProjectModel.prototype.setBacklogSize
     }
+  },
+  spentEffort: {
+    title: "Spent Effort",
+    get : ProjectModel.prototype.getSpentEffort,
+    editable: false,
+    decorator: DynamicsDecorators.exactEstimateDecorator,
+    edit: {
+        editor: "ExactEstimate",
+        decorator: DynamicsDecorators.exactEstimateEditDecorator,
+        size: '10ex',
+        set : null
+    }    
   },
   baselineLoad: {
     title : "Baseline load",
@@ -434,6 +446,7 @@ ProjectController.prototype.initializeProjectDetailsConfig = function() {
   config.addColumnConfiguration(ProjectController.columnIndices.startDate, ProjectController.columnConfigs.startDate);  
   config.addColumnConfiguration(ProjectController.columnIndices.endDate, ProjectController.columnConfigs.endDate);
   config.addColumnConfiguration(ProjectController.columnIndices.plannedSize, ProjectController.columnConfigs.plannedSize);
+  config.addColumnConfiguration(ProjectController.columnIndices.spentEffort, ProjectController.columnConfigs.spentEffort);  
   config.addColumnConfiguration(ProjectController.columnIndices.baselineLoad, ProjectController.columnConfigs.baselineLoad);
   config.addColumnConfiguration(ProjectController.columnIndices.assignees, ProjectController.columnConfigs.assignees);
   config.addColumnConfiguration(ProjectController.columnIndices.description, ProjectController.columnConfigs.description);

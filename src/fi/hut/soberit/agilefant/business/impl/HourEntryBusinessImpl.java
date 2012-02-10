@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fi.hut.soberit.agilefant.business.BacklogBusiness;
 import fi.hut.soberit.agilefant.business.HourEntryBusiness;
+import fi.hut.soberit.agilefant.business.ProjectBusiness;
 import fi.hut.soberit.agilefant.business.StoryBusiness;
 import fi.hut.soberit.agilefant.business.TaskBusiness;
 import fi.hut.soberit.agilefant.business.UserBusiness;
@@ -30,6 +31,7 @@ import fi.hut.soberit.agilefant.model.Backlog;
 import fi.hut.soberit.agilefant.model.BacklogHourEntry;
 import fi.hut.soberit.agilefant.model.HourEntry;
 import fi.hut.soberit.agilefant.model.Iteration;
+import fi.hut.soberit.agilefant.model.Project;
 import fi.hut.soberit.agilefant.model.Story;
 import fi.hut.soberit.agilefant.model.StoryHourEntry;
 import fi.hut.soberit.agilefant.model.Task;
@@ -52,6 +54,8 @@ public class HourEntryBusinessImpl extends GenericBusinessImpl<HourEntry>
     private UserBusiness userBusiness;
     @Autowired
     private BacklogBusiness backlogBusiness;
+    @Autowired
+    private ProjectBusiness projectBusiness;
   
     @Autowired
     private BacklogHourEntryDAO backlogHourEntryDAO;
@@ -173,6 +177,15 @@ public class HourEntryBusinessImpl extends GenericBusinessImpl<HourEntry>
         return hourEntryDAO.calculateIterationHourEntriesSum(iteration.getId());
     }
     
+    @Transactional(readOnly = true)
+    public long calculateSumOfProjectHourEntries(Project project) {
+        long effortSpent = 0;
+        for(Iteration i : projectBusiness.retrieveProjectIterations(project.getId())) {
+            effortSpent += hourEntryDAO.calculateIterationHourEntriesSum(i.getId());
+        }
+        return effortSpent + calculateSum(hourEntryDAO.getBacklogHourEntries(project.getId(), 0));
+    }
+ 
     public List<HourEntry> getEntriesByUserAndTimeInterval(int userId, DateTime startDate,
             DateTime endDate) {
         return this.hourEntryDAO.getHourEntriesByFilter(startDate, endDate, userId);

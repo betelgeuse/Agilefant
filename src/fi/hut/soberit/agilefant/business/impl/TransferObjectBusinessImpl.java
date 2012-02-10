@@ -116,6 +116,7 @@ public class TransferObjectBusinessImpl implements TransferObjectBusiness {
         ProjectTO returned = new ProjectTO(project);
         returned.setScheduleStatus(this.getBacklogScheduleStatus(project));        
         returned.setAssignees(new HashSet<User>());
+        returned.setSpentEffort(hourEntryBusiness.calculateSumOfProjectHourEntries(project));
         
         for(Assignment assignment : project.getAssignments()) {
             returned.getAssignees().add(assignment.getUser());
